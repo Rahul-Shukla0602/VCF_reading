@@ -11,14 +11,14 @@ with open('for_sale.vcf', mode='r') as vcf_:
 
 
 
-        test_list = ['BEGIN', 'VERSION', 'CHARSET']
+        black_list = ['BEGIN', 'VERSION', 'CHARSET']
         end_tag = ['END']
         name_tag = ["N"]
         first_name_tag = ['FN']
         numbers_tag = ['TEL', 'CELL']
         org_tag = ['ORG', "Org", 'org']
 
-        if [ele for ele in test_list if(ele in line)]:
+        if [ele for ele in black_list if(ele in line)]:
             continue
 
         #NAMES
@@ -40,8 +40,11 @@ with open('for_sale.vcf', mode='r') as vcf_:
             if lenghtOfnamer == 2:
                 data['Tel'] = namer[-1].strip()
             else:
-                joinNamers = ''.join(namer[1:])
-                data['Tel'] = joinNamers.strip()
+                joinNamers = ' '.join(namer[1:])
+                allNumbers = joinNamers.split(' ')
+                for i in allNumbers:
+                    allNumbers[i]=allNumbers[i].strip()
+                data['Tel'] = allNumbers
 
 
         #FIRST NAMES
