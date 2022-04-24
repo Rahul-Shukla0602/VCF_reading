@@ -1,5 +1,5 @@
-#import re
 import pprint
+import pickle
 
 contacts = []
 data = {}
@@ -40,11 +40,11 @@ with open('for_sale.vcf', mode='r') as vcf_:
             if lenghtOfnamer == 2:
                 data['Tel'] = namer[-1].strip()
             else:
-                joinNamers = ' '.join(namer[1:])
-                allNumbers = joinNamers.split(' ')
-                for i in allNumbers:
-                    allNumbers[i]=allNumbers[i].strip()
-                data['Tel'] = allNumbers
+                joinNamers = namer[1:]
+
+                for i in range(len(joinNamers)):
+                    joinNamers[i]=joinNamers[i].strip()
+                data['Tel'] = joinNamers
 
 
         #FIRST NAMES
@@ -81,5 +81,10 @@ with open('for_sale.vcf', mode='r') as vcf_:
             contacts.append(data)
             data = {}
 
+
+with open('pickFile', mode='wb') as pickFile:
+    pickle.dump(contacts, pickFile)
+    pickFile.close()
+
 pprint.pprint(contacts[0])
-pprint.pprint(contacts)
+pprint.pprint(len(contacts))
