@@ -1,27 +1,82 @@
-import re
+#import re
 import pprint
 
+contacts = []
+data = {}
+
 with open('for_sale.vcf', mode='r') as vcf_:
-    contacts = []
+
 
     for line in vcf_:
-        # name = re.findall('FN:(.*)', line)
-        # tel = re.findall('tel:(.*)', line)
-        # nm = ''.join(name)
-        # tel = ''.join(tel)
-        # cell = re.findall('FN:')
-        # if len(nm) == 0 and len(tel) == 0:
-        #     continue
-        # data = {'name': nm, 'phone': tel}
-        # contacts.append(data)
-        #
-        #
-        test_list = ['BEGIN', 'END', 'VERSION', 'CHARSET']
+
+
+
+        test_list = ['BEGIN', 'VERSION', 'CHARSET']
+        end_tag = ['END']
+        name_tag = ["N"]
+        first_name_tag = ['FN']
+        numbers_tag = ['TEL', 'CELL']
+        org_tag = ['ORG', "Org", 'org']
+
         if [ele for ele in test_list if(ele in line)]:
             continue
 
+        #NAMES
+        if [ele for ele in name_tag if(ele in line)]:
+            namer = line.split(':')
+            lenghtOfnamer = len(namer)
+            if lenghtOfnamer==2:
+                if namer[-1].strip()!='VCARD':
+                    data['name'] = namer[-1].strip()
+            else:
+                joinNamers = ''.join(namer[1:])
+                if joinNamers.strip()!='VCARD':
+                    data['name'] = joinNamers.strip()
+
+        # NUMBERS
+        if [ele for ele in numbers_tag if (ele in line)]:
+            namer = line.split(':')
+            lenghtOfnamer = len(namer)
+            if lenghtOfnamer == 2:
+                data['Tel'] = namer[-1].strip()
+            else:
+                joinNamers = ''.join(namer[1:])
+                data['Tel'] = joinNamers.strip()
 
 
-        print(line)
+        #FIRST NAMES
+        if [ele for ele in first_name_tag if(ele in line)]:
+            namer = line.split(':')
+            lenghtOfnamer = len(namer)
+            if lenghtOfnamer==2:
+                data['first name'] = namer[-1].strip()
+                if len(namer[-1])>9:
+                    if namer[-1].isnumeric():
+                        data['Cell'] = int(namer[-1].strip())
+            else:
+                joinNamers = ''.join(namer[1:])
+                data['first name'] = joinNamers.strip()
 
-    pprint.pprint(contacts)
+                if len(joinNamers)>9:
+                    if joinNamers.isnumeric():
+                        data['Cell'] = int(joinNamers.strip())
+
+
+        #ORGANIZATIONS
+        if [ele for ele in org_tag if(ele in line)]:
+            namer = line.split(':')
+            lenghtOfnamer = len(namer)
+            if lenghtOfnamer==2:
+                data['org'] = namer[-1].strip()
+            else:
+                joinNamers = ''.join(namer[1:])
+                data['org'] = joinNamers.strip()
+
+
+        #END
+        if [ele for ele in end_tag if(ele in line)]:
+            contacts.append(data)
+            data = {}
+
+pprint.pprint(contacts[0])
+pprint.pprint(contacts)
