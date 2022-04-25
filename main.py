@@ -22,7 +22,7 @@ with open('for_sale.vcf', mode='r') as vcf_:
             continue
 
         #NAMES
-        if [ele for ele in name_tag if(ele in line)]:
+        if [ele for ele in name_tag if(ele in line)] and not [ele for ele in first_name_tag if(ele in line)]:
             namer = line.split(':')
             lenghtOfnamer = len(namer)
             if lenghtOfnamer==2:
